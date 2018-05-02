@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
        numbers[i] = rand()  % size;    
 	   
 	for(int i = 0; i < size; i++) {
-		printf("%d ", array[i]);
+		printf("%d ", numbers[i]);
     }
     printf("\n"); 
 	 
