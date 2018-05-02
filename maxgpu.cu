@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	unsigned int thread;
 	
 	block = 30;
-	thread = 512;
+	thread = 1024;
     
     if(argc !=2)
     {
@@ -138,11 +138,11 @@ int main(int argc, char *argv[])
 	//cudaMemcpy(cudaN, n, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 		
 	
-	getmaxcu<<<block, thread, thread>>>(cudaNumbers, cudaSize, cudaN);
+	getmaxcu<<<block, thread, sizeof(unsigned int)*thread>>>(cudaNumbers, cudaSize, cudaN);
 	//cudaSize/thread;
    
     
-	getmaxcu<<<1, block, block>>>(cudaNumbers, block, block);
+	getmaxcu<<<1, block, sizeof(unsigned int)*block>>>(cudaNumbers, block, block);
 	printf("%s\n", cudaMemcpy(numbers, cudaNumbers, size*sizeof(unsigned int), cudaMemcpyDeviceToHost));
 	
 	for(int i = 0; i < size; i++) {
