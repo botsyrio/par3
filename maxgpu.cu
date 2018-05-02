@@ -106,11 +106,12 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 		}
 		__syncthreads();
 	}
+	*/
 	
 	if(tid==0){//store the block maxes in global memory
 		num[blockIdx.x]=sdata[0];
 	}
-	*/
+	
 
 	//return(num[0]);
 
