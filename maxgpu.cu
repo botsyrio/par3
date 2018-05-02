@@ -40,7 +40,7 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	unsigned int tSize = size/n;
 	
 	const unsigned int dim = blockDim.x;
-	__device__ __shared__ int sdata[]; // shared data
+	__shared__ int sdata[]; // shared data
 	
 	if(tid<size%n)
 		tSize++;
