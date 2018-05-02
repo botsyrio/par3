@@ -148,6 +148,7 @@ int main(int argc, char *argv[])
 	for(int i = 0; i < size; i++) {
 		printf("%d ", numbers[i]);
     }
+    printf("\n"); 
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
 
     free(numbers);
