@@ -67,9 +67,37 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 		__syncthreads();
 	}
 	
+	
+	/*
+	//BELOW: version that does not use shared memory
+	
+	if(tid<size%n)
+		tSize++;
+	__syncthreads();	
+	
+	//each thread iterates over its section of the large array
+	for(unsigned int i = 0; i < tSize; i++)
+		if(num[gloid]<num[gloid+i])
+			num[gloid]=num[gloid+i];
+			
+	__syncthreads();
+	
+	//get a block max by performing a tree-structured 
+	//reduction akin to that depicted in slide 17 of 
+	//the lecture 8 pp
+	
+	for(unsigned int stride = 1; stride<blockDim.x; stride*=2){
+		if(tid%(2*stride)==0){
+			if(sdata[tid]<sdata[tid+stride])
+				sdata[tid]=sdata[tid+stride];
+		}
+		__syncthreads();
+	}
+	
 	if(tid==0){//store the block maxes in global memory
 		num[blockIdx.x]=sdata[0];
 	}
+	*/
 
 	//return(num[0]);
 
@@ -94,7 +122,7 @@ int main(int argc, char *argv[])
 	unsigned int thread;
 	
 	block = 30;
-	thread = 1024;
+	thread = 512;
     
     if(argc !=2)
     {
