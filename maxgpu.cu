@@ -73,6 +73,11 @@ int main(int argc, char *argv[])
     // Fill-up the array with random numbers from 0 to size-1 
     for( i = 0; i < size; i++)
        numbers[i] = rand()  % size;    
+	   
+	for(int i = 0; i < size; i++) {
+		printf("%d ", array[i]);
+    }
+    printf("\n"); 
 	 
 	cudaMalloc(cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
