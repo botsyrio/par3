@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN);  
 	getmaxcu<<<1, block>>>(cudaNumbers, block, block);
 	
-	cudaMemcpy(numbers, cudaNumbers, size*sizeof(unsigned int), cudaMemcpyDeviceToHost);
+	cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost);
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
 
     free(numbers);
