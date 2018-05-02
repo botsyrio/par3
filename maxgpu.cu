@@ -10,48 +10,7 @@ unsigned int getmax(unsigned int *, unsigned int);
 
 int main(int argc, char *argv[])
 {
-	printf("char name[256]; = %s\n
-              size_t totalGlobalMem; = %d\n
-              size_t sharedMemPerBlock; = %d\n
-              int regsPerBlock; = %d\n
-              int warpSize; = %d\n
-              size_t memPitch; = %d\n
-              int maxThreadsPerBlock; = %d\n
-              int maxThreadsDim[3]; = %d\n
-              int maxGridSize[3]; = %d\n
-              int clockRate; = %d\n
-              size_t totalConstMem; = %d\n
-              int major; = %d\n
-              int minor; = %d\n
-              size_t textureAlignment; = %d\n
-              size_t texturePitchAlignment; = %d\n
-              int deviceOverlap; = %d\n
-              int multiProcessorCount; = %d\n
-              int kernelExecTimeoutEnabled; = %d\n
-              int integrated; = %d\n
-              int canMapHostMemory; = %d\n
-              int computeMode; = %d\n", prop->name,
-              prop->totalGlobalMem,
-              prop->sharedMemPerBlock,
-            prop->regsPerBlock,
-              prop->warpSize,
-              prop->memPitch,
-              prop->maxThreadsPerBlock,
-              prop->maxThreadsDim[3],
-              prop->maxGridSize[3],
-              prop->clockRate,
-              prop->totalConstMem,
-              prop->major,
-              prop->minor,
-              prop->textureAlignment,
-             prop->texturePitchAlignment,
-              prop->deviceOverlap,
-              prop->multiProcessorCount,
-              prop->kernelExecTimeoutEnabled,
-            prop->integrated,
-              prop->canMapHostMemory,
-              prop-> computeMode,
-             );
+	printf("char name[256]; = %s\n size_t totalGlobalMem; = %d\n size_t sharedMemPerBlock; = %d\n int regsPerBlock; = %d\n int warpSize; = %d\n size_t memPitch; = %d\n int maxThreadsPerBlock; = %d\n int maxThreadsDim[3]; = %d\n int maxGridSize[3]; = %d\n int clockRate; = %d\n size_t totalConstMem; = %d\n   int major; = %d\n int minor; = %d\n size_t textureAlignment; = %d\n size_t texturePitchAlignment; = %d\n int deviceOverlap; = %d\n int multiProcessorCount; = %d\n int kernelExecTimeoutEnabled; = %d\n int integrated; = %d\n int canMapHostMemory; = %d\n int computeMode; = %d\n", prop->name,prop->totalGlobalMem, prop->sharedMemPerBlock, prop->regsPerBlock, prop->warpSize,            prop->memPitch, prop->maxThreadsPerBlock,  prop->maxThreadsDim[3], prop->maxGridSize[3],             prop->clockRate, prop->totalConstMem,prop->major,   prop->minor, prop->textureAlignment,   prop->texturePitchAlignment, prop->deviceOverlap, prop->multiProcessorCount,        prop->kernelExecTimeoutEnabled, prop->integrated, prop->canMapHostMemory, prop-> computeMode,            );
     unsigned int size = 0;  // The size of the array
     unsigned int i;  // loop index
     unsigned int * numbers; //pointer to the array
