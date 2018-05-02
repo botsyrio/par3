@@ -79,26 +79,26 @@ int main(int argc, char *argv[])
     }
     printf("\n"); 
 	 
-	cudaMalloc(cudaNumbers, (size * sizeof(unsigned int)));
+	cudaMalloc((void**)&cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
 	unsigned int cudaSize;
-	cudaMalloc(cudaSize, sizeof(unsigned int));
+	cudaMalloc((void**)&cudaSize, sizeof(unsigned int));
 	cudaMemcpy(cudaSize, size, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
 	
 	unsigned int n = block*thread;
 	unsigned int cudaN;
-	cudaMalloc(cudaN, sizeof(unsigned int));
+	cudaMalloc((void**)&cudaN, sizeof(unsigned int));
 	cudaMemcpy(cudaN, n, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 		
 	
-	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN));
+	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN);
 	//cudaSize/thread;
    
     
 	getmaxcu<<<1, block>>>(cudaNumbers, block, block);
-	printf("%s\n", cudaMemcpy(numbers, devArray, sizeof(unsigned int), cudaMemcpyDeviceToHost));
+	printf("%s\n", cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost));
 
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
 
@@ -117,13 +117,13 @@ int main(int argc, char *argv[])
 */
 __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	/*if(id<size%n)
-		starting = (threadId.x+blockId.x*blockDim.x)(size/n+1);
+		starting = (threadIdx.x+blockId.x*blockDim.x)(size/n+1);
 	else
 		starting = (size%n)(size/n+1)+((threadId.x+blockId.x*blockDim.x)-size%n)(size/n);*/
 		
 	
 	unsigned int tid = threadIdx.x;
-	unsigned int gloid = blockId.x*blockDimx.x+threadId.x;	
+	unsigned int gloid = blockIdx.x*blockDim.x+threadId.x;	
 	unsigned int tSize = size/n;
 	__shared__ int sdata[blockDim.x]; // shared data
 	
@@ -152,7 +152,7 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	}
 	
 	if(tid==0){
-		num[blockId.x]=sdata[0];
+		num[blockIdx.x]=sdata[0];
 	}
 
 	//return(num[0]);
