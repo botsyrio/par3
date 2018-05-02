@@ -3,7 +3,7 @@
 #include <time.h>
 #include <cuda.h>
 
-#define thread 1024
+#define thread 512
 /*
 This code was developed and tested on cuda1
 
