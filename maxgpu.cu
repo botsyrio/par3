@@ -82,15 +82,15 @@ int main(int argc, char *argv[])
 	cudaMalloc((void**)&cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
-	unsigned int cudaSize;
-	cudaMalloc((void**)&cudaSize, sizeof(unsigned int));
-	cudaMemcpy(cudaSize, size, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
+	unsigned int cudaSize=size;
+	//cudaMalloc((void**)&cudaSize, sizeof(unsigned int));
+	//cudaMemcpy(cudaSize, size, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
 	
-	unsigned int n = block*thread;
-	unsigned int cudaN;
-	cudaMalloc((void**)&cudaN, sizeof(unsigned int));
-	cudaMemcpy(cudaN, n, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
+	unsigned int cudaN = block*thread;
+	//unsigned int cudaN;
+	//cudaMalloc((void**)&cudaN, sizeof(unsigned int));
+	//cudaMemcpy(cudaN, n, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 		
 	
 	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN);
@@ -123,7 +123,7 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 		
 	
 	unsigned int tid = threadIdx.x;
-	unsigned int gloid = blockIdx.x*blockDim.x+threadId.x;	
+	unsigned int gloid = blockIdx.x*blockDim.x+threadIdx.x;	
 	unsigned int tSize = size/n;
 	__shared__ int sdata[blockDim.x]; // shared data
 	
@@ -151,7 +151,7 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 		__syncthreads();
 	}
 	
-	if(tid==0){
+	if(tid==0){//store the block maxes in global memory
 		num[blockIdx.x]=sdata[0];
 	}
 
