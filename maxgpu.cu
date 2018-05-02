@@ -50,7 +50,7 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	//each thread iterates over its section of the large array
 	sdata[tid]=num[gloid];
 	for(unsigned int i = 0; i < tSize; i++)
-		if(num[gloid] > sdata[tid])
+		if(sdata[tid]<num[gloid])
 			sdata[tid]=num[gloid];
 			
 	__syncthreads();
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	unsigned int thread;
 	
 	block = 30;
-	thread = 1024;
+	thread = 512;
     
     if(argc !=2)
     {
@@ -144,7 +144,10 @@ int main(int argc, char *argv[])
     
 	getmaxcu<<<1, block, block>>>(cudaNumbers, block, block);
 	printf("%s\n", cudaMemcpy(numbers, cudaNumbers, size*sizeof(unsigned int), cudaMemcpyDeviceToHost));
-
+	
+	for(int i = 0; i < size; i++) {
+		printf("%d ", numbers[i]);
+    }
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
 
     free(numbers);
