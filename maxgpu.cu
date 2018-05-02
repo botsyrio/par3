@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	unsigned int* cudaNumbers;
 	unsigned int block;
 	
-	block = 60;
+	block = 30;
     
     if(argc !=2)
     {
@@ -100,11 +100,6 @@ int main(int argc, char *argv[])
 	getmaxcu<<<1, block>>>(cudaNumbers, block, block);
 	
 	cudaMemcpy(numbers, cudaNumbers, size*sizeof(unsigned int), cudaMemcpyDeviceToHost);
-	
-	//for(int i = 0; i < size; i++) {
-	//	printf("%d ", numbers[i]);
-    //}
-    //printf("\n"); 
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
 
     free(numbers);
