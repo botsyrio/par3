@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	unsigned int thread;
 	
 	block = 30;
-	thread = 512;
+	thread = 1024;
     
     if(argc !=2)
     {
