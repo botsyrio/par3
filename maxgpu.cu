@@ -82,12 +82,15 @@ int main(int argc, char *argv[])
 	cudaMalloc(cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
-	cudaMalloc((unsigned int)cudaSize, sizeof(unsigned int));
+	unsigned int cudaSize;
+	cudaMalloc(cudaSize, sizeof(unsigned int));
 	cudaMemcpy(cudaSize, size, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
 	
 	unsigned int n = block*thread;
-	cudaMalloc((unsigned int)cudaN, sizeof(unsigned int));
+	unsigned int cudaN;
+	cudaMalloc(cudaN, sizeof(unsigned int));
+	cudaMemcpy(cudaN, n, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 		
 	
 	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN));
@@ -112,15 +115,15 @@ int main(int argc, char *argv[])
           number of elements in the array
    output: the maximum number of the array
 */
-__global__ unsigned void getmaxcu(unsigned int num[], unsigned int size, int n){
+__global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	/*if(id<size%n)
 		starting = (threadId.x+blockId.x*blockDim.x)(size/n+1);
 	else
 		starting = (size%n)(size/n+1)+((threadId.x+blockId.x*blockDim.x)-size%n)(size/n);*/
 		
 	
-	unsigned int tid = threadId.x;
-	unsigned int gloid = blockId.x*blockDim.x+threadId.x;	
+	unsigned int tid = threadIdx.x;
+	unsigned int gloid = blockId.x*blockDimx.x+threadId.x;	
 	unsigned int tSize = size/n;
 	__shared__ int sdata[blockDim.x]; // shared data
 	
@@ -142,14 +145,14 @@ __global__ unsigned void getmaxcu(unsigned int num[], unsigned int size, int n){
 	
 	for(unsigned int stride = 1; stride<blockDim.x; stride*=2){
 		if(tid%(2*stride)==0){
-			if(sdata[tid]<sdata[tid+s])
-				sdata[tid]=sdata[tid+s];
+			if(sdata[tid]<sdata[tid+stride])
+				sdata[tid]=sdata[tid+stride];
 		}
 		__syncthreads();
 	}
 	
 	if(tid==0){
-		num[blockId.x]=sData[0];
+		num[blockId.x]=sdata[0];
 	}
 
 	//return(num[0]);
