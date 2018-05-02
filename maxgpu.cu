@@ -10,7 +10,7 @@ unsigned int getmax(unsigned int *, unsigned int);
 
 int main(int argc, char *argv[])
 {
-	/*printf("char name[256]; = %s\n
+	printf("char name[256]; = %s\n
               size_t totalGlobalMem; = %d\n
               size_t sharedMemPerBlock; = %d\n
               int regsPerBlock; = %d\n
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
             prop->integrated,
               prop->canMapHostMemory,
               prop-> computeMode,
-             );*/
+             );
     unsigned int size = 0;  // The size of the array
     unsigned int i;  // loop index
     unsigned int * numbers; //pointer to the array
