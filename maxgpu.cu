@@ -50,8 +50,8 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	//each thread iterates over its section of the large array
 	sdata[tid]=num[gloid];
 	for(unsigned int i = 0; i < tSize; i++)
-		if(sdata[tid]<num[gloid])
-			sdata[tid]=num[gloid];
+		if(sdata[tid]<num[gloid+i])
+			sdata[tid]=num[gloid+i];
 			
 	__syncthreads();
 	
