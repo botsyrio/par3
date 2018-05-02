@@ -63,7 +63,7 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	//reduction akin to that depicted in slide 17 of 
 	//the lecture 8 pp
 	
-	for (int stride = blockDim.x / 2; stride > 0; stride = s / 2) {
+	for (int stride = blockDim.x / 2; stride > 0; stride = stride / 2) {
         if (threadIdx.x < stride) {
             if (sdata[threadIdx.x] < sdata[threadIdx.x + stride]) {
                 sdata[threadIdx.x] = sdata[threadIdx.x + stride];
@@ -132,10 +132,8 @@ int main(int argc, char *argv[])
     unsigned int * numbers; //pointer to the array
 	unsigned int* cudaNumbers;
 	unsigned int block;
-	unsigned int thread;
 	
 	block = 30;
-	thread = 512;
     
     if(argc !=2)
     {
