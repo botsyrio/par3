@@ -3,6 +3,7 @@
 #include <time.h>
 #include <cuda.h>
 
+#define thread 1024
 /*
 This code was developed and tested on cuda1
 
@@ -41,17 +42,20 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	unsigned int tSize = size/n;
 	
 	//const unsigned int dim = blockDim.x;
-	extern __shared__ int sdata[]; // shared data
+	__shared__ int sdata[thread]; // shared data
 	
-	if(tid<size%n)
-		tSize++;
-	__syncthreads();	
+	//if(tid<size%n)
+	//	tSize++;
+	//__syncthreads();	
 	
 	//each thread iterates over its section of the large array
 	sdata[tid]=num[gloid];
-	for(unsigned int i = 0; i < tSize; i++)
-		if(sdata[tid]<num[gloid+i])
-			sdata[tid]=num[gloid+i];
+	//for(unsigned int i = 0; i < tSize; i++)
+	//	if(sdata[tid]<num[gloid+i])
+	//		sdata[tid]=num[gloid+i];
+	if(gloid>=size){
+		sdata[threadIdx.x]=0;
+	}
 			
 	__syncthreads();
 	
@@ -59,13 +63,22 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	//reduction akin to that depicted in slide 17 of 
 	//the lecture 8 pp
 	
-	for(unsigned int stride = 1; stride<blockDim.x; stride*=2){
+	for (int stride = blockDim.x / 2; stride > 0; stride = s / 2) {
+        if (threadIdx.x < stride) {
+            if (reduced_result[threadIdx.x] < reduced_result[threadIdx.x + stride]) {
+                reduced_result[threadIdx.x] = reduced_result[threadIdx.x + stride];
+            }
+        }
+        __syncthreads();
+	}
+	
+	/*for(unsigned int stride = 1; stride<blockDim.x; stride*=2){
 		if(tid%(2*stride)==0){
 			if(sdata[tid]<sdata[tid+stride])
 				sdata[tid]=sdata[tid+stride];
 		}
 		__syncthreads();
-	}
+	}*/
 	
 	
 	/*
