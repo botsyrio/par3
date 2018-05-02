@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
 	unsigned int block;
 	unsigned int thread;
 	
-	block = 30;
-	thread = 1024;
+	block = 60;
+	thread = 512;
     
     if(argc !=2)
     {
