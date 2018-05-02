@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	unsigned int* cudaNumbers;
 	unsigned int block;
 	
-	block = 30;
+	block = 45;
     
     if(argc !=2)
     {
