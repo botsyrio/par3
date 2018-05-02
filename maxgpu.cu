@@ -28,7 +28,49 @@ max threads per SM: 2048
 */
 
 
-unsigned int getmax(unsigned int *, unsigned int);
+__global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
+	/*if(id<size%n)
+		starting = (threadIdx.x+blockId.x*blockDim.x)(size/n+1);
+	else
+		starting = (size%n)(size/n+1)+((threadId.x+blockId.x*blockDim.x)-size%n)(size/n);*/
+		
+	
+	unsigned int tid = threadIdx.x;
+	unsigned int gloid = blockIdx.x*blockDim.x+threadIdx.x;	
+	unsigned int tSize = size/n;
+	__shared__ int sdata[blockDim.x]; // shared data
+	
+	if(tid<size%n)
+		tSize++;
+	__syncthreads();	
+	
+	//each thread iterates over its section of the large array
+	sdata[tid]=num[gloid];
+	for(unsigned int i = 0; i < tSize; i++)
+		if(num[gloid] > sdata[tid])
+			sdata[tid]=num[gloid];
+			
+	__syncthreads();
+	
+	//get a block max by performing a tree-structured 
+	//reduction akin to that depicted in slide 17 of 
+	//the lecture 8 pp
+	
+	for(unsigned int stride = 1; stride<blockDim.x; stride*=2){
+		if(tid%(2*stride)==0){
+			if(sdata[tid]<sdata[tid+stride])
+				sdata[tid]=sdata[tid+stride];
+		}
+		__syncthreads();
+	}
+	
+	if(tid==0){//store the block maxes in global memory
+		num[blockIdx.x]=sdata[0];
+	}
+
+	//return(num[0]);
+
+}
 
 int main(int argc, char *argv[])
 {
@@ -104,8 +146,8 @@ int main(int argc, char *argv[])
 
     free(numbers);
 	cudaFree(cudaNumbers);
-	cudaFree(cudaSize);
-	cudaFree(cudaN);
+	//cudaFree(cudaSize);
+	//cudaFree(cudaN);
     exit(0);
 }
 
@@ -115,46 +157,3 @@ int main(int argc, char *argv[])
           number of elements in the array
    output: the maximum number of the array
 */
-__global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
-	/*if(id<size%n)
-		starting = (threadIdx.x+blockId.x*blockDim.x)(size/n+1);
-	else
-		starting = (size%n)(size/n+1)+((threadId.x+blockId.x*blockDim.x)-size%n)(size/n);*/
-		
-	
-	unsigned int tid = threadIdx.x;
-	unsigned int gloid = blockIdx.x*blockDim.x+threadIdx.x;	
-	unsigned int tSize = size/n;
-	__shared__ int sdata[blockDim.x]; // shared data
-	
-	if(tid<size%n)
-		tSize++;
-	__syncthreads();	
-	
-	//each thread iterates over its section of the large array
-	sdata[tid]=num[gloid];
-	for(unsigned int i = 0; i < tSize; i++)
-		if(num[gloid] > sdata[tid])
-			sdata[tid]=num[gloid];
-			
-	__syncthreads();
-	
-	//get a block max by performing a tree-structured 
-	//reduction akin to that depicted in slide 17 of 
-	//the lecture 8 pp
-	
-	for(unsigned int stride = 1; stride<blockDim.x; stride*=2){
-		if(tid%(2*stride)==0){
-			if(sdata[tid]<sdata[tid+stride])
-				sdata[tid]=sdata[tid+stride];
-		}
-		__syncthreads();
-	}
-	
-	if(tid==0){//store the block maxes in global memory
-		num[blockIdx.x]=sdata[0];
-	}
-
-	//return(num[0]);
-
-}
