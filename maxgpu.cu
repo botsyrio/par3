@@ -38,7 +38,9 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	unsigned int tid = threadIdx.x;
 	unsigned int gloid = blockIdx.x*blockDim.x+threadIdx.x;	
 	unsigned int tSize = size/n;
-	extern __shared__ int sdata[blockDim.x]; // shared data
+	
+	unsigned int dim = blockDim.x;
+	__shared__ int sdata[dim]; // shared data
 	
 	if(tid<size%n)
 		tSize++;
