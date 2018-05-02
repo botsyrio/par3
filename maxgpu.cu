@@ -84,10 +84,10 @@ int main(int argc, char *argv[])
     for( i = 0; i < size; i++)
        numbers[i] = rand()  % size;    
 	   
-	for(int i = 0; i < size; i++) {
-		printf("%d ", numbers[i]);
-    }
-    printf("\n"); 
+	//for(int i = 0; i < size; i++) {
+	//	printf("%d ", numbers[i]);
+    //}
+    //printf("\n"); 
 	 
 	cudaMalloc((void**)&cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
