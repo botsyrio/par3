@@ -39,8 +39,8 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	unsigned int gloid = blockIdx.x*blockDim.x+threadIdx.x;	
 	unsigned int tSize = size/n;
 	
-	const unsigned int dim = blockDim.x;
-	__shared__ int sdata[]; // shared data
+	//const unsigned int dim = blockDim.x;
+	extern __shared__ int sdata[]; // shared data
 	
 	if(tid<size%n)
 		tSize++;
@@ -137,11 +137,11 @@ int main(int argc, char *argv[])
 	//cudaMemcpy(cudaN, n, (sizeof(unsigned int)), cudaMemcpyHostToDevice);
 		
 	
-	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN);
+	getmaxcu<<<block, thread, thread>>>(cudaNumbers, cudaSize, cudaN);
 	//cudaSize/thread;
    
     
-	getmaxcu<<<1, block>>>(cudaNumbers, block, block);
+	getmaxcu<<<1, block, block>>>(cudaNumbers, block, block);
 	printf("%s\n", cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost));
 
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
