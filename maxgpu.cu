@@ -106,10 +106,9 @@ int main(int argc, char *argv[])
 	
 	//getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
 	while(block>1){
-		getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
-		cudaSize=cudaSize/thread;
-		thread = block;
-		block = cudaSize/thread;
+		getmaxcu<<<block, maxThreads>>>(cudaNumbers, cudaSize);
+		cudaSize=cudaSize/maxThreads;
+		block = cudaSize/maxThreads;
 	}
 	getmaxcu<<<1, block>>>(cudaNumbers, block);
 	
