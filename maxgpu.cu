@@ -83,28 +83,23 @@ int main(int argc, char *argv[])
        exit(1);
     }
 
-	if (size%maxThreads != 0) {
-        size = (size/maxThreads+1)*maxThreads;
-    } 
 
     srand(time(NULL)); // setting a seed for the random number generator
     // Fill-up the array with random numbers from 0 to size-1 
     for( i = 0; i < size; i++)
        numbers[i] = rand()  % size;    
-	   
-	//for(int i = 0; i < size; i++) {
-	//	printf("%d ", numbers[i]);
-    //}
-    //printf("\n"); 
 	
 	cudaMalloc((void**)&cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
+	
+	if (size%maxThreads != 0) {
+        size = (size/maxThreads+1)*maxThreads;
+    } 
 	unsigned int cudaSize=size;
 	thread = maxThreads;
 	block = size/thread;
 	
-	//getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
 	while(block>1){
 		getmaxcu<<<block, maxThreads>>>(cudaNumbers, cudaSize);
 		cudaSize=cudaSize/maxThreads;
