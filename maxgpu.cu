@@ -66,8 +66,6 @@ int main(int argc, char *argv[])
     unsigned int * numbers; //pointer to the array
 	unsigned int* cudaNumbers;
 	unsigned int block;
-	
-	block = 48;
     
     if(argc !=2)
     {
@@ -77,7 +75,7 @@ int main(int argc, char *argv[])
     }
    
     size = atol(argv[1]);
-
+	block = size/thread;
     numbers = (unsigned int *)malloc(size * sizeof(unsigned int));
     if( !numbers )
     {
