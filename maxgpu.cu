@@ -103,13 +103,13 @@ int main(int argc, char *argv[])
 	block = size/thread;
 	
 	//getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
-	while(cudaSize>0){
+	while(block>1){
 		getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
 		cudaSize=cudaSize/thread;
 		thread = block;
 		block = cudaSize/thread;
 	}
-	//getmaxcu<<<1, block>>>(cudaNumbers, block, block);
+	getmaxcu<<<1, block>>>(cudaNumbers, block);
 	
 	cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost);//only copies back the max, which should be in the first element of the array
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
