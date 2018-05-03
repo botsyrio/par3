@@ -3,19 +3,19 @@
 #include <time.h>
 #include <cuda.h>
 
-#define thread 1024
+#define maxThreads 512
 /*
 This code was developed and tested on cuda3
 
 */
 
 
-__global__ void getmaxcu(unsigned int num[], unsigned int size, int n){		
+__global__ void getmaxcu(unsigned int num[], unsigned int size){		
 	
 	unsigned int tid = threadIdx.x;
 	unsigned int gloid = blockIdx.x*blockDim.x+threadIdx.x;	
 	
-	__shared__ int sdata[thread]; // shared data
+	__shared__ int sdata[maxThreads]; // shared data
 	
 	sdata[tid]=num[gloid];
 	if(gloid>=size){
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     unsigned int i;  // loop index
     unsigned int * numbers; //pointer to the array
 	unsigned int* cudaNumbers;
+	unsigned int thread;
 	unsigned int block;
     
     if(argc !=2)
@@ -75,7 +76,6 @@ int main(int argc, char *argv[])
     }
    
     size = atol(argv[1]);
-	block = size/thread;
     numbers = (unsigned int *)malloc(size * sizeof(unsigned int));
     if( !numbers )
     {
@@ -94,15 +94,21 @@ int main(int argc, char *argv[])
 	//	printf("%d ", numbers[i]);
     //}
     //printf("\n"); 
-	 
+	
 	cudaMalloc((void**)&cudaNumbers, (size * sizeof(unsigned int)));
 	cudaMemcpy(cudaNumbers, numbers, (size * sizeof(unsigned int)), cudaMemcpyHostToDevice);
 	
 	unsigned int cudaSize=size;
+	thread = maxThreads;
+	block = size/thread;
 	
-	unsigned int cudaN = block*thread;		
-	
-	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN);  
+	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
+	while(cudaSize>0){
+		getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize);
+		cudaSize=cudaSize/thread;
+		thread = block;
+		block = cudaSize/thread;
+	}
 	getmaxcu<<<1, block>>>(cudaNumbers, block, block);
 	
 	cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost);//only copies back the max, which should be in the first element of the array
