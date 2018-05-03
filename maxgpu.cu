@@ -83,7 +83,9 @@ int main(int argc, char *argv[])
        exit(1);
     }
 
-	
+	if (size % max_nb_of_thread != 0) {
+        size = (size/maxThreads+1)*maxThreads;
+    } 
 
     srand(time(NULL)); // setting a seed for the random number generator
     // Fill-up the array with random numbers from 0 to size-1 
