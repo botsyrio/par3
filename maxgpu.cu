@@ -3,7 +3,7 @@
 #include <time.h>
 #include <cuda.h>
 
-#define thread 512
+#define thread 1024
 /*
 This code was developed and tested on cuda3
 
@@ -21,7 +21,15 @@ __global__ void getmaxcu(unsigned int num[], unsigned int size, int n){
 	if(gloid>=size){
 		sdata[threadIdx.x]=0;
 	}
-			
+	
+	/*if(n<size){
+		int tSize = size/n;
+		if(tid<(size%n)
+			tSize++;
+		for(int i; i<tSize; i++)
+			if(sdata[tid]<num[glo
+	}
+	*/
 	__syncthreads();
 	
 	//get a block max by performing a tree-structured 
@@ -59,7 +67,7 @@ int main(int argc, char *argv[])
 	unsigned int* cudaNumbers;
 	unsigned int block;
 	
-	block = 60;
+	block = 48;
     
     if(argc !=2)
     {
@@ -99,7 +107,7 @@ int main(int argc, char *argv[])
 	getmaxcu<<<block, thread>>>(cudaNumbers, cudaSize, cudaN);  
 	getmaxcu<<<1, block>>>(cudaNumbers, block, block);
 	
-	cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost);
+	cudaMemcpy(numbers, cudaNumbers, sizeof(unsigned int), cudaMemcpyDeviceToHost);//only copies back the max, which should be in the first element of the array
 	printf(" The maximum number in the array is: %u\n", numbers[0]);
 
     free(numbers);
