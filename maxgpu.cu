@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
        exit(1);
     }
 
-	if (size % max_nb_of_thread != 0) {
+	if (size%maxThreads != 0) {
         size = (size/maxThreads+1)*maxThreads;
     } 
 
